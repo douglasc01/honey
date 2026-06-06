@@ -1,0 +1,8 @@
+# Build artifacts
+Honey.app/
+dist/
+.build/
+*.log
+
+# macOS
+.DS_Store
