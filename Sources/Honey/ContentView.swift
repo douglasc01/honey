@@ -1,25 +1,23 @@
 import SwiftUI
 
 /// Renders the current frame: one filled rect per non-transparent pixel,
-/// integer-scaled, no smoothing — pixels stay crisp.
+/// integer-scaled, no smoothing — pixels stay crisp. Sized to the scene's own
+/// grid (32×32 for a solo friend, 56×32 when both are together).
 struct SpriteCanvas: View {
     @EnvironmentObject var honey: Honey
 
     var body: some View {
-        let side = CGFloat(honey.sheet.grid * honey.scale)
+        let scene = honey.scene
+        let w = CGFloat(scene.width * honey.scale)
+        let h = CGFloat(scene.height * honey.scale)
         Canvas { ctx, size in
-            let scale = size.width / CGFloat(honey.sheet.grid)
+            let s = size.height / CGFloat(scene.height)
             for p in honey.currentPixels {
-                let rect = CGRect(
-                    x: CGFloat(p.x) * scale,
-                    y: CGFloat(p.y) * scale,
-                    width: scale,
-                    height: scale
-                )
+                let rect = CGRect(x: CGFloat(p.x) * s, y: CGFloat(p.y) * s, width: s, height: s)
                 ctx.fill(Path(rect), with: .color(p.color))
             }
         }
-        .frame(width: side, height: side)
+        .frame(width: w, height: h)
     }
 }
 
@@ -43,7 +41,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: honey.scale >= 4 ? 8 : 6) {
             SpriteCanvas()
-            TaskLabel(text: honey.activity.label, fontSize: honey.scale >= 4 ? 12 : 10)
+            TaskLabel(text: honey.displayLabel, fontSize: honey.scale >= 4 ? 12 : 10)
         }
         .padding(honey.scale >= 4 ? 14 : 10)
         .fixedSize()

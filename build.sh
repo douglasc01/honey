@@ -17,7 +17,7 @@ swiftc -O -swift-version 5 \
     Sources/Honey/*.swift \
     -o "$MACOS/Honey"
 
-cp Sources/Honey/Resources/honey-sprites.json "$RES/"
+cp Sources/Honey/Resources/honey-and-bagel.json "$RES/"
 cp Info.plist "$CONTENTS/Info.plist"
 
 echo "Built $APP"

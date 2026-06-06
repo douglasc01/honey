@@ -6,3 +6,9 @@ dist/
 
 # macOS
 .DS_Store
+
+# Design-package drop-ins (the app's sprite data lives in Sources/Honey/Resources)
+*.zip
+*.webp
+*.jpg
+

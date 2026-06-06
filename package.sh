@@ -28,7 +28,7 @@ echo "Creating universal binary…"
 lipo -create "/tmp/honey-arm64" "/tmp/honey-x86_64" -output "$MACOS/Honey"
 rm -f "/tmp/honey-arm64" "/tmp/honey-x86_64"
 
-cp Sources/Honey/Resources/honey-sprites.json "$RES/"
+cp Sources/Honey/Resources/honey-and-bagel.json "$RES/"
 cp Info.plist "$CONTENTS/Info.plist"
 
 echo "Signing (ad-hoc, full bundle)…"

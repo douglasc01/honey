@@ -1,26 +1,49 @@
-# 🍯 Honey — an 8-bit macOS desk companion
+# 🍯 Honey & Bagel — an 8-bit macOS desk companion
 
-Honey is a tiny pixel-art character that lives on your Mac. The sprite **animates
-live in your menu bar** while you work, and a larger version sits **on your
-desktop** for when you tidy your windows away. Throughout the day Honey quietly
-gets on with little tasks — sipping coffee, watering plants, reading, dozing off —
-switching activity every few minutes.
+**Honey** the cream heart and **Bagel** the golden croissant are two pixel-art
+plush friends that live on your Mac. They **animate live in your menu bar** while
+you work, and a larger version sits **on your desktop** for when you tidy your
+windows away. They appear solo or together, quietly getting on with little tasks
+— sipping coffee, watering plants, reading, dozing off — and the cast rotates
+every few minutes with a quick *"someone's visiting!"* hello.
 
 It's a lightweight menu-bar app (no Dock icon), built in Swift with SwiftUI + AppKit.
 
-> **Heads up:** Honey is distributed **unsigned** (ad-hoc signed, not notarized by
+> **Heads up:** the app is distributed **unsigned** (ad-hoc signed, not notarized by
 > Apple). It's safe, but macOS will warn you the first time you open it — see
 > [First launch](#first-launch-important) below for the one-time step.
 
 ---
 
+## Meet the cast
+
+<p align="center">
+  <img src="assets/honey-waving.gif" width="140" alt="Honey waving">
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/bagel-waving.gif" width="140" alt="Bagel waving">
+</p>
+<p align="center"><strong>Honey</strong> &nbsp;·&nbsp; <strong>Bagel</strong> — and when they hang out together:</p>
+<p align="center">
+  <img src="assets/both-dance.gif" width="250" alt="Honey and Bagel dancing together">
+</p>
+
+<sub>Actual sprites rendered from <code>honey-and-bagel.json</code>, scaled ×8.</sub>
+
+---
+
 ## Features
 
-- 🎞️ **12 animations** — idle, sleeping, waking, coffee, computer, reading,
-  eating, exercise, watering plants, music, waving, dancing.
-- 🧠 **Time-aware** — leans toward sleeping at night and coffee in the morning.
-- 🪟 **Two places at once** — animated in the menu bar *and* on the desktop.
-- 📏 **Resizable** — Small / Medium / Large (96 / 128 / 160 px), crisp integer scaling.
+- 🧑‍🤝‍🧑 **Two characters** — Honey and Bagel, each with 12 solo scenes, plus 7
+  "together" scenes (coffee for two, dance party, movie night, picnic, high-five,
+  nap, duet).
+- 🔁 **Cast rotation** — auto-cycles Honey → both → Bagel → both, with a brief
+  greeting when the cast changes.
+- 🎛️ **Choose who shows up** — toggle Honey, Bagel, and Together in/out of the
+  rotation, or pin the app to one cast.
+- 🧠 **Time-aware** — leans toward sleeping/napping at night and coffee in the morning.
+- 🪟 **Two places at once** — animated in the menu bar *and* on the desktop;
+  the window resizes itself (square solo, wider when both are present).
+- 📏 **Resizable** — Small / Medium / Large, crisp integer scaling.
 - 📌 **Pin to any corner**, or drag it anywhere.
 - 🗂️ **Layering** — sit *behind* your windows (a calm background companion) or
   stay *always on top*.
@@ -69,12 +92,14 @@ Click the menu-bar sprite:
 
 | Menu item | What it does |
 |-----------|--------------|
+| **Cast** | **Auto (rotate)**, or pin to just **Honey**, **Bagel**, or **Honey & Bagel** (together). |
+| **In the rotation** | Toggle which casts the Auto loop may visit — Honey, Bagel, Together. (At least one stays on.) |
+| **Scene** | Jump to a specific scene in the current cast. It keeps auto-rotating afterward. |
 | **Show on Desktop** | Toggle the larger desktop companion on/off. |
-| **Size** | Small (96 px) · Medium (128 px) · Large (160 px). |
+| **Size** | Small / Medium / Large. |
 | **Pin to Corner** | Bottom Right / Bottom Left / Top Right / Top Left. (You can also just drag it.) |
 | **Layer** | **Behind Everything** (covered by your windows, visible on the desktop) or **Always on Top**. |
-| **Activity** | Jump to a specific animation. It keeps auto-rotating afterward. |
-| **Quit Honey** | Quit. |
+| **Quit** | Quit. |
 
 All choices are saved and restored next time you launch.
 
@@ -100,11 +125,11 @@ Project layout:
 Sources/Honey/
   main.swift         # NSApplication bootstrap (.accessory = no Dock icon)
   AppDelegate.swift  # menu-bar item, animated icon, window, menu, settings
-  Honey.swift        # animation + activity-scheduling engine
+  Honey.swift        # animation + cast/scene-rotation engine
   ContentView.swift  # SwiftUI Canvas that draws the pixels
-  SpriteData.swift   # decodes the sprite sheet + palette
+  SpriteData.swift   # decodes the casts, scenes + palette
   Resources/
-    honey-sprites.json  # source of truth: palette + 12 tasks × frames (32×32)
+    honey-and-bagel.json  # source of truth: palette + casts (honey/bagel/both) × scenes × frames
 Info.plist           # bundle metadata (LSUIElement, min OS, etc.)
 build.sh             # dev build
 package.sh           # release build → dist/Honey-macOS.zip
