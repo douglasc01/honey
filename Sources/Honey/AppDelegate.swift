@@ -13,13 +13,15 @@ enum Layer: String, CaseIterable {
     case onTop  = "Always on Top"
 }
 
-final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDelegate {
     private let honey = Honey(sheet: SpriteSheet.load())
     private var statusItem: NSStatusItem!
     private var window: NSWindow!
     private var hostingView: NSHostingView<AnyView>!
 
-    private var corner: Corner = .bottomRight
+    private var corner: Corner? = .bottomRight
+    private var freeOrigin: CGPoint?
+    private var isProgrammaticMove = false
     private var layer: Layer = .behind
     private var showOnDesktop = true
 
@@ -42,7 +44,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func loadSettings() {
         let d = UserDefaults.standard
         if d.object(forKey: "scale") != nil { honey.scale = d.integer(forKey: "scale") }
-        if let raw = d.string(forKey: "corner"), let c = Corner(rawValue: raw) { corner = c }
+        if let raw = d.string(forKey: "corner") {
+            corner = (raw == "free") ? nil : Corner(rawValue: raw)
+            if corner == nil, d.object(forKey: "freeOriginX") != nil {
+                freeOrigin = CGPoint(x: d.double(forKey: "freeOriginX"), y: d.double(forKey: "freeOriginY"))
+            }
+        }
         if let raw = d.string(forKey: "layer"), let l = Layer(rawValue: raw) { layer = l }
         if d.object(forKey: "showOnDesktop") != nil { showOnDesktop = d.bool(forKey: "showOnDesktop") }
         if let raw = d.string(forKey: "forcedCast") { honey.forcedCastID = (raw == "auto") ? nil : raw }
@@ -54,7 +61,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func saveSettings() {
         let d = UserDefaults.standard
         d.set(honey.scale, forKey: "scale")
-        d.set(corner.rawValue, forKey: "corner")
+        d.set(corner?.rawValue ?? "free", forKey: "corner")
+        if let o = freeOrigin {
+            d.set(Double(o.x), forKey: "freeOriginX")
+            d.set(Double(o.y), forKey: "freeOriginY")
+        }
         d.set(layer.rawValue, forKey: "layer")
         d.set(showOnDesktop, forKey: "showOnDesktop")
         d.set(honey.forcedCastID ?? "auto", forKey: "forcedCast")
@@ -78,6 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         win.isMovableByWindowBackground = true
         win.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         win.tabbingMode = .disallowed
+        win.delegate = self
         self.window = win
 
         applyLayer()
@@ -95,8 +107,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func layoutWindow() {
         var frame = window.frame
         frame.size = hostingView.fittingSize
+        isProgrammaticMove = true
+        defer { isProgrammaticMove = false }
         window.setFrame(frame, display: true)
-        pin(to: corner)
+        if let corner {
+            pin(to: corner)
+        } else if let o = freeOrigin {
+            window.setFrameOrigin(o)
+        }
+    }
+
+    /// The user dragged the window: drop the corner pin and remember the position.
+    func windowDidMove(_ notification: Notification) {
+        guard !isProgrammaticMove else { return }
+        corner = nil
+        freeOrigin = window.frame.origin
+        saveSettings()
     }
 
     private func pin(to corner: Corner) {
