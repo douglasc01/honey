@@ -56,6 +56,28 @@ click the sprite up in the menu bar:
 | **size** | small, medium, or large |
 | **pin to corner** | tuck them into any corner — or just drag them wherever you like |
 | **layer** | keep them behind your windows (calm and out of the way) or always on top |
+| **break game** | settings for the little hover-to-play games (more below) |
 | **quit** | say goodbye for now |
 
 whatever you pick is remembered for next time.
+
+## taking a break
+
+rest your cursor on the desktop sprite for a few seconds and they'll perk up while a little bar fills underneath. when it fills, a small framed play area opens up around them and a quick game begins — a gentle nudge to step away from work for a moment.
+
+there are three games, and whoever's on screen stars in it (shrunk down a touch to leave room to move):
+
+- **snack catch** — slide left and right to catch falling treats before they hit the floor. three misses and it's over.
+- **quick tap** — click the treats as they fall; chain them together for a combo bonus.
+- **reaction** — wait for the signal, then click as fast as you can. clicking too early sets you back.
+
+a short note tells you what to do when each round starts, and your best score in each game is remembered. move your cursor away mid-game and it politely pauses — come back and it counts down **3 · 2 · 1** before picking up where you left off. there's always a small **✕** in the corner to stop and send them back to their spot.
+
+under **break game** in the menu you can:
+
+| option | what it does |
+|--------|--------------|
+| **hover to play** | turn the whole thing on or off |
+| **game** | let the games rotate at random, or pick just one |
+| **games in rotation** | choose which games show up at random (at least one always stays) |
+| **hover delay** | how long to rest your cursor before a game starts — 3, 5, or 8 seconds |
