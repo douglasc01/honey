@@ -19,6 +19,9 @@ final class Honey: ObservableObject {
     /// When set, auto cast-rotation is paused and only this cast is shown.
     var forcedCastID: String?
 
+    /// While a break-game session owns the window, ambient animation is paused.
+    var paused = false
+
     var onFrameChange: (() -> Void)?    // same scene, next frame → redraw icon only
     var onLayoutChange: (() -> Void)?   // scene/cast/greeting changed → resize + redraw
 
@@ -60,10 +63,15 @@ final class Honey: ObservableObject {
         ticker = timer
     }
 
+    /// Resume ambient ticking after a game session, without fast-forwarding the
+    /// scene/cast countdowns by the whole paused duration.
+    func resumeAmbient() { lastTick = Date(); paused = false }
+
     private func tick() {
         let now = Date()
         let dt = min(0.1, now.timeIntervalSince(lastTick))
         lastTick = now
+        if paused { return }
 
         var frameChanged = false
         var layoutChanged = false

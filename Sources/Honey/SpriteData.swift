@@ -36,10 +36,27 @@ struct Cast: Identifiable {
     let scenes: [Scene]
 }
 
+/// Resolves palette keys (e.g. "OL", "gold") to colors. Built once from the
+/// hex map in honey-and-bagel.json so the procedural game engine and the baked
+/// scenes share one source of truth for color.
+struct Palette {
+    let rgb: [String: (r: Double, g: Double, b: Double)]
+
+    func color(_ key: String) -> Color {
+        guard let c = rgb[key] else { return .clear }
+        return Color(red: c.r, green: c.g, blue: c.b)
+    }
+    func cg(_ key: String) -> CGColor {
+        guard let c = rgb[key] else { return CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0) }
+        return CGColor(srgbRed: c.r, green: c.g, blue: c.b, alpha: 1)
+    }
+}
+
 struct SpriteSheet {
     let grid: Int
     let casts: [Cast]
     let castOrder: [String]
+    let palette: Palette
 
     func index(of castID: String) -> Int? { casts.firstIndex { $0.id == castID } }
 
@@ -97,7 +114,8 @@ struct SpriteSheet {
                         scenes: rc.tasks.map(buildScene))
         }
 
-        return SpriteSheet(grid: raw.grid, casts: casts, castOrder: raw.castOrder)
+        return SpriteSheet(grid: raw.grid, casts: casts, castOrder: raw.castOrder,
+                           palette: Palette(rgb: rgb))
     }
 }
 
